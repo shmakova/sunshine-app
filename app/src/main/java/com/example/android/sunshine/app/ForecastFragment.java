@@ -68,6 +68,8 @@ public class ForecastFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
+                FetchWeatherTask weatherTask = new FetchWeatherTask();
+                weatherTask.execute();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
