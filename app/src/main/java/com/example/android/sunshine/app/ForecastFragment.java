@@ -33,8 +33,8 @@ import java.util.ArrayList;
  */
 
 public class ForecastFragment extends Fragment {
-    private static final String LOG_TAG = "ForecastFragment";
     private ArrayAdapter<String> mForecastAdapter;
+    private ListView listView;
 
     public ForecastFragment() {
     }
@@ -58,10 +58,10 @@ public class ForecastFragment extends Fragment {
         weatherList.add("Fri - Foggy - 70/46");
         weatherList.add("Sat - Sunny - 76/68");
 
-        ArrayAdapter<String> mForecastAdapter = new ArrayAdapter<String>(getActivity(),
+        mForecastAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.list_item_forecast, R.id.list_item_forecast_textview, weatherList);
 
-        ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
+        listView = (ListView) rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
 
         return rootView;
@@ -84,7 +84,7 @@ public class ForecastFragment extends Fragment {
         }
     }
 
-    public static class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
+    public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
         @Override
         protected String[] doInBackground(String... params) {
@@ -154,7 +154,7 @@ public class ForecastFragment extends Fragment {
                 return null;
             } catch (JSONException e) {
                 e.printStackTrace();
-            } finally{
+            } finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
                 }
@@ -169,9 +169,20 @@ public class ForecastFragment extends Fragment {
             return null;
         }
 
+        @Override
+        protected void onPostExecute(String[] strings) {
+            if (strings != null) {
+                mForecastAdapter.clear();
+
+                for (String string : strings) {
+                    mForecastAdapter.add(string);
+                }
+            }
+        }
+
         /* The date/time conversion code is going to be moved outside the asynctask later,
-             * so for convenience we're breaking it out into its own method now.
-             */
+                     * so for convenience we're breaking it out into its own method now.
+                     */
         private String getReadableDateString(long time) {
             // Because the API returns a unix timestamp (measured in seconds),
             // it must be converted to milliseconds in order to be converted to valid date.
@@ -261,11 +272,7 @@ public class ForecastFragment extends Fragment {
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
             }
 
-            for (String s : resultStrs) {
-                Log.v(LOG_TAG, "Forecast entry: " + s);
-            }
             return resultStrs;
-
         }
     }
 }
