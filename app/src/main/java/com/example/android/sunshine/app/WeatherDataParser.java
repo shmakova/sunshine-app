@@ -15,7 +15,7 @@ public class WeatherDataParser {
      * retrieve the maximum temperature for the day indicated by dayIndex
      * (Note: 0-indexed, so 0 would refer to the first day).
      */
-    public double getMaxTemperatureForDay(String weatherJsonStr, int dayIndex)
+    public static double getMaxTemperatureForDay(String weatherJsonStr, int dayIndex)
             throws JSONException {
         final String LIST = "list";
         final String TEMPERATURE = "temp";
